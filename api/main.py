@@ -7,6 +7,14 @@ api = Api(app)
 class HelloWorld(Resource):
     def get(self):
         return {"data":"Hello World"}
+    
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204 
+
+@app.route("/")
+def index():
+    return {"message": "Welcome to the API!"}
 
 api.add_resource(HelloWorld, "/helloworld")
 
