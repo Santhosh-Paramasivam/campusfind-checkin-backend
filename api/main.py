@@ -6,7 +6,7 @@ from firebase_admin import credentials, firestore
 from flask import Flask
 from flask_restful import Api, Resource
 
-service_account_base64 = os.getenv('GOOGLE_CREDENTIALS')
+service_account_base64 = os.getenv('FIREBASE_AUTH_CREDENTIALS')
 service_account_json = base64.b64decode(service_account_base64).decode('utf-8')
 service_account_info = json.loads(service_account_json)
 
