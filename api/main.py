@@ -31,7 +31,7 @@ class getUserFromUID(Resource):
             doc = docs_list[0]
             return {
                 "id": doc.id,
-                "user_name": doc.to_dict().get('user_name')
+                "user_id": doc.to_dict().get('user_id')
             }
         else:
             return {"error": "No matching document found"}, 404
