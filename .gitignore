@@ -1,0 +1,4 @@
+server_testing/
+
+# DANGER : DO NOT PUSH TO GITHUB, RISKS SAFETY
+service_keys/
