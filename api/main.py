@@ -24,10 +24,19 @@ class HelloWorld(Resource):
         collection_ref = db.collection('rfid_users')
         
         # Pull all documents from the collection
-        docs = collection_ref.stream()
-        doc = collection_ref.where("rfid", "==", "AAAAAAAA")
+        # docs = collection_ref.stream()
+        query_ref = collection_ref.where("rfid", "==", "AAAAAAAA")
+        docs = query_ref.stream()
 
-        return {f"id:{doc.id},user_name:{doc.to_dict()['user_name']}"}
+        docs_list = list(docs)
+        if docs_list:
+            doc = docs_list[0]  # Fetch the first document from the query result
+            return {
+                "id": doc.id,
+                "user_name": doc.to_dict().get('user_name')
+            }
+        else:
+            return {"error": "No matching document found"}, 404
         # Convert generator to list and fetch first document if exists
         
         #docs_list = list(docs)
