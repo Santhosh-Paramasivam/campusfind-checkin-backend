@@ -15,7 +15,7 @@ api = Api(app)
 
 class HelloWorld(Resource):
     def get(self):
-        return {"data":service_account_base64}
+        return {"data":service_account_info}
     
 @app.route('/favicon.ico')
 def favicon():
