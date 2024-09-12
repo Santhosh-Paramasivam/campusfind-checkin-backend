@@ -1,4 +1,4 @@
 server_testing/
 
-# DANGER : DO NOT PUSH TO GITHUB, RISKS SAFETY
+# firestore auth service keys
 service_keys/

@@ -3,7 +3,7 @@ import json
 import base64
 import firebase_admin
 from firebase_admin import credentials, firestore
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Api, Resource
 
 service_account_base64 = os.getenv('FIREBASE_AUTH_CREDENTIALS')
@@ -18,6 +18,13 @@ db = firestore.client()
 
 app = Flask(__name__)
 api = Api(app)
+
+API_KEY = "klXJfkUSyMFuIevkzCDJ7cn5uUzrFCyT"
+
+def apiKeyCheck(req):
+
+    api_key = req.headers.get('x-api-key')
+    return api_key == API_KEY
 
 class getUserFromUID(Resource):
     def get(self):
@@ -52,6 +59,22 @@ class getRoomFromMACAddress(Resource):
             }
         else:
             return {"error": "No matching document found"}, 404
+        
+class sendScannedUID(Resource):
+    def get(self):
+        if not apiKeyCheck(request):
+            return {"error": "Unauthorized access"}, 401
+        
+        data = request.json
+        if not data:
+            return {"error": "Bad Request, No data in request"}, 400
+        if 'uid' not in data:
+            return {"error": "Bad Request, Tag uid not in request"}, 400
+        if 'mac address' not in data:
+            return {"error": "Bad Request, MAC Address not in request"}, 400
+        
+        return data, 200
+
     
 @app.route('/favicon.ico')
 def favicon():
@@ -63,5 +86,6 @@ def index():
 
 api.add_resource(getUserFromUID, "/getUserFromUID")
 api.add_resource(getRoomFromMACAddress, "/getRoomFromMACAddress")
+api.add_resource(sendScannedUID,  "/track_update")
 
 app = app
