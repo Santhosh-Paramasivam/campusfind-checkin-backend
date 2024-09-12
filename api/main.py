@@ -21,7 +21,16 @@ api = Api(app)
 
 class HelloWorld(Resource):
     def get(self):
-        return {"data":service_account_info}
+        collection_ref = db.collection('trial')
+
+        # Pull all documents from the collection
+        docs = collection_ref.stream()
+
+        # Loop through and print each document's data
+        #for doc in docs:
+        #    print(f'Document ID: {doc.id}')
+        #    print(f'Document Data: {doc.to_dict()}')
+        return {"data":docs[0].to_dict()}
     
 @app.route('/favicon.ico')
 def favicon():
