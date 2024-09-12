@@ -22,15 +22,17 @@ api = Api(app)
 class HelloWorld(Resource):
     def get(self):
         collection_ref = db.collection('trial')
-
+        
         # Pull all documents from the collection
         docs = collection_ref.stream()
 
-        # Loop through and print each document's data
-        #for doc in docs:
-        #    print(f'Document ID: {doc.id}')
-        #    print(f'Document Data: {doc.to_dict()}')
-        return {"data":docs[0].to_dict()}
+        # Convert generator to list and fetch first document if exists
+        docs_list = list(docs)
+        if docs_list:
+            first_doc = docs_list[0].to_dict()
+            return {"data": first_doc}
+        else:
+            return {"data": "No documents found"}, 404
     
 @app.route('/favicon.ico')
 def favicon():
