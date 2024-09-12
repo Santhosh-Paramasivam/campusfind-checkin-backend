@@ -62,6 +62,6 @@ def index():
     return {"message": "Welcome to the API!"}
 
 api.add_resource(getUserFromUID, "/getUserFromUID")
-api.add_resource(getUserFromUID, "/getRoomFromMACAddress")
+api.add_resource(getRoomFromMACAddress, "/getRoomFromMACAddress")
 
 app = app
