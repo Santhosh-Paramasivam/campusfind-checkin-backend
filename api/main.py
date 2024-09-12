@@ -19,32 +19,39 @@ db = firestore.client()
 app = Flask(__name__)
 api = Api(app)
 
-class HelloWorld(Resource):
+class getUserFromUID(Resource):
     def get(self):
         collection_ref = db.collection('rfid_users')
-        
-        # Pull all documents from the collection
-        # docs = collection_ref.stream()
+
         query_ref = collection_ref.where("rfid", "==", "AAAAAAAA")
         docs = query_ref.stream()
 
         docs_list = list(docs)
         if docs_list:
-            doc = docs_list[0]  # Fetch the first document from the query result
+            doc = docs_list[0]
             return {
                 "id": doc.id,
                 "user_name": doc.to_dict().get('user_name')
             }
         else:
             return {"error": "No matching document found"}, 404
-        # Convert generator to list and fetch first document if exists
         
-        #docs_list = list(docs)
-        #if docs_list:
-        #    first_doc = docs_list[0].to_dict()
-        #    return {"data": first_doc}
-        #else:
-        #    return {"data": "No documents found"}, 404
+class getRoomFromMACAddress(Resource):
+    def get(self):
+        collection_ref = db.collection('rfid_reader_location')
+
+        query_ref = collection_ref.where("reader_mac_address", "==", "1234")
+        docs = query_ref.stream()
+
+        docs_list = list(docs)
+        if docs_list:
+            doc = docs_list[0]
+            return {
+                "id": doc.id,
+                "location": doc.to_dict().get('location')
+            }
+        else:
+            return {"error": "No matching document found"}, 404
     
 @app.route('/favicon.ico')
 def favicon():
@@ -54,6 +61,7 @@ def favicon():
 def index():
     return {"message": "Welcome to the API!"}
 
-api.add_resource(HelloWorld, "/helloworld")
+api.add_resource(getUserFromUID, "/getUserFromUID")
+api.add_resource(getUserFromUID, "/getRoomFromMACAddress")
 
 app = app
