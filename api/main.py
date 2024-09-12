@@ -21,18 +21,21 @@ api = Api(app)
 
 class HelloWorld(Resource):
     def get(self):
-        collection_ref = db.collection('trial')
+        collection_ref = db.collection('rfid_users')
         
         # Pull all documents from the collection
         docs = collection_ref.stream()
+        doc = collection_ref.where("rfid", "==", "AAAAAAAA")
 
+        return {f"id:{doc.id},user_name:{doc.to_dict()['user_name']}"}
         # Convert generator to list and fetch first document if exists
-        docs_list = list(docs)
-        if docs_list:
-            first_doc = docs_list[0].to_dict()
-            return {"data": first_doc}
-        else:
-            return {"data": "No documents found"}, 404
+        
+        #docs_list = list(docs)
+        #if docs_list:
+        #    first_doc = docs_list[0].to_dict()
+        #    return {"data": first_doc}
+        #else:
+        #    return {"data": "No documents found"}, 404
     
 @app.route('/favicon.ico')
 def favicon():
