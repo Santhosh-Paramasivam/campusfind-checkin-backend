@@ -30,6 +30,7 @@ def apiKeyCheck(req):
     else:
         print(f"Received API key: {api_key}")
 
+    print(api_key == API_KEY)
     # Step 3: Compare the received API key with the stored one
     return api_key == API_KEY
 
