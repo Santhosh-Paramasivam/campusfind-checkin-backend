@@ -59,7 +59,22 @@ class getRoomFromMACAddress(Resource):
             }
         else:
             return {"error": "No matching document found"}, 404
+
+class sendTimeStamp(Resource):
+    def post(self):
+
+        collection_ref = db.collection('rfid_user')
+
+        query_ref = collection_ref.where("user_id","==","1")
+        docs = query_ref.stream()
+        # a = query_ref.get()
         
+        for doc in docs:
+
+            doc_ref = db.collection('rfid_users').document(doc.id)
+            doc_ref.update({'user_id':1})
+            return {'Success':"The data was added"}, 200
+            
 class sendScannedUID(Resource):
     def get(self):
         if not apiKeyCheck(request):
@@ -70,7 +85,7 @@ class sendScannedUID(Resource):
             return {"error": "Bad Request, No data in request"}, 400
         if 'uid' not in data:
             return {"error": "Bad Request, Tag uid not in request"}, 400
-        if 'mac address' not in data:
+        if 'mac_address' not in data:
             return {"error": "Bad Request, MAC Address not in request"}, 400
         
         return data, 200
@@ -87,5 +102,6 @@ def index():
 api.add_resource(getUserFromUID, "/getUserFromUID")
 api.add_resource(getRoomFromMACAddress, "/getRoomFromMACAddress")
 api.add_resource(sendScannedUID,  "/track_update")
+api.add_resource(sendTimeStamp,"/timestamp")
 
 app = app
