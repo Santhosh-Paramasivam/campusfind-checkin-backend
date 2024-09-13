@@ -110,10 +110,10 @@ class updateUserLocation(Resource):
             return {"Error":"mac_address field not sent"},400    
         
         #print(data['mac_address'])
-        #datatoreturn = getDocument('rfid_reader_location',('reader_mac_address','==',data['mac_address']),('location',))
+        data = getDocument('rfid_reader_location',('reader_mac_address','==',data['mac_address']),('location',))
         #uid = data.get('uid')
         #print(uid)
-        data = getDocument('rfid_users',('rfid_uid','==',data['uid']),('user_id',))
+        #data = getDocument('rfid_users',('rfid_uid','==',data['uid']),('user_id',))
         # updateDocument('rfid_users',('user_id','==',1),{"user_id":2})
         if not data:
            return {"Error":"User document not updated"}, 400
