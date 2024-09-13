@@ -130,16 +130,12 @@ class updateUserLocation(Resource):
         if not rfid_users:
             return {"Error":"Invalid UID"},400
         user_id = rfid_users['user_id']
-        
 
         docUpdated = updateDocument('rfid_users',('user_id','==',user_id),{"location":location})
         if not docUpdated:
-            return {"Error":"Invalid Something"},400
-        
-        if not data:
-           return {"Error":"User document not updated"}, 400
-        else:
-            return {"Success":"User document updated","uid":uid,"mac_address":mac_address,"location":location,"user_id":user_id}, 200
+            return {"Error":"Unexpected error occured"},400
+
+        return {"Success":"User document updated","uid":uid,"mac_address":mac_address,"location":location,"user_id":user_id}, 200
         
             
 class sendScannedUID(Resource):
