@@ -123,9 +123,9 @@ class updateUserLocation(Resource):
         
         if not data:
             return {"Error":"no input data sent"},400
-        if not 'uid' in data:
+        if 'uid' not in data:
             return {"Error":"uid field not sent"},400
-        if not 'mac_address' in data:
+        if 'mac_address' not in data:
             return {"Error":"mac_address field not sent"},400    
         
         if not updateDocument('rfid_users',('user_id','==',1),{"user_id":2}):
