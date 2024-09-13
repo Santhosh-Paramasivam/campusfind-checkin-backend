@@ -71,41 +71,7 @@ def getDocument(collection_id, query, values_to_get):
     else:
         return None
 
-class getUserFromUID(Resource):
-    def get(self):
-        collection_ref = db.collection('rfid_users')
-
-        query_ref = collection_ref.where("rfid", "==", "AAAAAAAA")
-        docs = query_ref.stream()
-
-        docs_list = list(docs)
-        if docs_list:
-            doc = docs_list[0]
-            return {
-                "id": doc.id,
-                "user_id": doc.to_dict().get('user_id')
-            }
-        else:
-            return {"error": "No matching document found"}, 404
-        
-class getRoomFromMACAddress(Resource):
-    def get(self):
-        collection_ref = db.collection('rfid_reader_location')
-
-        query_ref = collection_ref.where("reader_mac_address", "==", "1234")
-        docs = query_ref.stream()
-
-        docs_list = list(docs)
-        if docs_list:
-            doc = docs_list[0]
-            return {
-                "id": doc.id,
-                "location": doc.to_dict().get('location')
-            }
-        else:
-            return {"error": "No matching document found"}, 404
-
-class updateUserLocation(Resource):
+class UpdateUserLocation(Resource):
     def post(self):
         if not apiKeyCheck(request):
             return {"Error":"Unauthorised access"},401
@@ -146,24 +112,31 @@ class updateUserLocation(Resource):
         if not docUpdated:
             return {"Error":"Unexpected error occured"},400
 
-        return {"Success":"User document updated","uid":uid,"mac_address":mac_address,"location":current_location,"user_id":user_id}, 200
-        
-            
-class sendScannedUID(Resource):
-    def get(self):
-        if not apiKeyCheck(request):
-            return {"error": "Unauthorized access"}, 401
-        
-        data = request.json
-        if not data:
-            return {"error": "Bad Request, No data in request"}, 400
-        if 'uid' not in data:
-            return {"error": "Bad Request, Tag uid not in request"}, 400
-        if 'mac_address' not in data:
-            return {"error": "Bad Request, MAC Address not in request"}, 400
-        
-        return data, 200
+        return {"Success":"User document updated"}, 200
 
+class UpdateRFIDReaderOnlineTimestamp(Resource):
+     
+     def post(self):
+        if not apiKeyCheck(request):
+            return {"Error":"Unauthorised access"},401
+        
+        data = json.loads(request.json)
+
+        if not data:
+            return {"Error":"No input data sent"},400
+        if 'last_online' not in data:
+            return {"Error":"status_time field not sent"},400
+        if 'mac_address' not in data:
+            return {"Error":"mac_address field not sent"},400
+        
+        mac_address = data['mac_address']
+        last_online = datetime.fromisoformat(data['last_online'].replace("Z", "+00:00"))
+
+        docUpdated = updateDocument("rfid_reader_location",("reader_mac_address","==",mac_address),{last_online})
+        if not docUpdated:
+            return {"Error":"Unexpected error occured"},400
+        
+        return {"Success":"last_online variable updated"}, 200
     
 @app.route('/favicon.ico')
 def favicon():
@@ -173,9 +146,7 @@ def favicon():
 def index():
     return {"message": "Welcome to the API!"}
 
-api.add_resource(getUserFromUID, "/getUserFromUID")
-api.add_resource(getRoomFromMACAddress, "/getRoomFromMACAddress")
-api.add_resource(sendScannedUID,  "/track_update")
-api.add_resource(updateUserLocation,"/update_user_location")
+api.add_resource(UpdateUserLocation,"/update_user_location")
+api.add_resource(UpdateRFIDReaderOnlineTimestamp,"/last_online")
 
 app = app
