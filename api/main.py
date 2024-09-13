@@ -71,7 +71,7 @@ class sendTimeStamp(Resource):
         docs = query_ref.stream()
 
         # Initialize a counter to track how many documents are updated
-        updated_docs = 0
+        doc_updated = False
 
         # Loop through all documents found in the query
         for doc in docs:
@@ -79,11 +79,11 @@ class sendTimeStamp(Resource):
 
             # Update the user_id in the found document
             doc_ref.update({'user_id': 2})
-            updated_docs += 1  # Increment the counter after each update
+            doc_updated = True  # Increment the counter after each update
 
         # Check if any documents were updated and return a message accordingly
-        if updated_docs > 0:
-            return {'Success': f"{updated_docs} document(s) were updated"}, 200
+        if doc_updated:
+            return {'Success': "Document were updated"}, 200
         else:
             return {'Error': "No documents found with user_id = 1"}, 404
 
