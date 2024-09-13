@@ -34,6 +34,7 @@ def updateDocument(collection_id, query, updated_values):
 
     query_ref = collection_ref.where(query[0], query[1], query[2])
     if not query_ref:
+        print("No valid inputs")
         return False
     
     docs = query_ref.stream()
@@ -54,6 +55,7 @@ def getDocument(collection_id, query, values_to_get):
 
     query_ref = collection_ref.where(query[0], query[1], query[2])
     if not query_ref:
+        print("No valid inputs")
         return None
 
     docs = query_ref.stream()
@@ -119,17 +121,21 @@ class updateUserLocation(Resource):
         mac_address = data['mac_address']
         uid = data['uid']
 
-        location = getDocument("rfid_reader_location",("reader_mac_address","==",mac_address),("location",))['location']
-        if not location:
+        reader_mac_address = getDocument("rfid_reader_location",("reader_mac_address","==",mac_address),("location",))
+        if not reader_mac_address:
             return {"Error":"Invalid MAC address"},400
+        location = reader_mac_address['location']
         
-        user_id = getDocument('rfid_users',('rfid_uid','==',data['uid']),('user_id',))['user_id']
-        if not user_id:
+        rfid_users = getDocument('rfid_users',('rfid_uid','==',data['uid']),('user_id',))
+        if not rfid_users:
             return {"Error":"Invalid UID"},400
+        user_id = rfid_users['user_id']
+        
 
         docUpdated = updateDocument('rfid_users',('user_id','==',user_id),{"location":location})
         if not docUpdated:
             return {"Error":"Invalid Something"},400
+        
         if not data:
            return {"Error":"User document not updated"}, 400
         else:
