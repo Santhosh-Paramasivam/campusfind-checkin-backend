@@ -100,7 +100,7 @@ class updateUserLocation(Resource):
         if not apiKeyCheck(request):
             return {"Error":"Unauthorised access"},401
         
-        data = request.get_json(force=True)
+        data = request.json
         
         if not data:
             return {"Error":"No input data sent"},400
@@ -111,7 +111,7 @@ class updateUserLocation(Resource):
         
         #print(data['mac_address'])
         #datatoreturn = getDocument('rfid_reader_location',('reader_mac_address','==',data['mac_address']),('location',))
-        data = getDocument('rfid_users',('rfid_uid','==',data.get('uid')),('user_id',))
+        data = getDocument('rfid_users',('rfid_uid','==',data['uid']),('user_id',))
         # updateDocument('rfid_users',('user_id','==',1),{"user_id":2})
         if not data:
            return {"Error":"User document not updated"}, 400
