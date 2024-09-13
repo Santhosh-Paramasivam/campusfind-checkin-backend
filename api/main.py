@@ -22,8 +22,15 @@ api = Api(app)
 API_KEY = "klXJfkUSyMFuIevkzCDJ7cn5uUzrFCyT"
 
 def apiKeyCheck(req):
-
+    # Step 2: Debug the headers to ensure the API key is sent
     api_key = req.headers.get('x-api-key')
+    
+    if api_key is None:
+        print("API key header missing!")
+    else:
+        print(f"Received API key: {api_key}")
+
+    # Step 3: Compare the received API key with the stored one
     return api_key == API_KEY
 
 def updateDocument(collection_id, query, updated_values):
