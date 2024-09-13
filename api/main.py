@@ -57,8 +57,14 @@ def getDocument(collection_id, query, values_to_get):
 
     collection_ref = db.collection(collection_id)
 
-    query_ref = collection_ref.where(query[0],query[1],query[2])
-    docs = query_ref.stream()
+    try:
+        # Query the Firestore collection with the provided query
+        query_ref = collection_ref.where(query[0], query[1], query[2])
+        docs = query_ref.stream()
+    except exceptions.INVALID_ARGUMENT as e:
+        # Log or handle specific Firestore exceptions
+        print(f"Error during query: {e}")
+        return {"Error":"Invalid query or document not found."}, 400
 
     docs_list = list(docs)
     if docs_list:
