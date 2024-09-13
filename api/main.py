@@ -31,23 +31,35 @@ def updateDocument(collection_id, query, updated_values):
 
     collection_ref = db.collection(collection_id)
 
-    # Query for documents where user_id equals 1
     query_ref = collection_ref.where(query[0],query[1],query[2])
     docs = query_ref.stream()
 
-    # Initialize a counter to track how many documents are updated
     doc_updated = False
 
-    # Loop through all documents found in the query
     for doc in docs:
         doc_ref = db.collection(collection_id).document(doc.id)
 
-        # Update the user_id in the found document
         doc_ref.update(updated_values)
-        doc_updated = True  # Increment the counter after each update
+        doc_updated = True
 
-    # Check if any documents were updated and return a message accordingly
     return doc_updated
+
+def getDocument(collection_id, query):
+
+    collection_ref = db.collection(collection_id)
+
+    query_ref = collection_ref.where(query[0],query[1],query[2])
+    docs = query_ref.stream()
+
+    docs_list = list(docs)
+    if docs_list:
+        doc = docs_list[0]
+        return {
+            "id": doc.id,
+            "user_id": doc.to_dict().get('user_id')
+        }
+    else:
+        return None
 
 class getUserFromUID(Resource):
     def get(self):
@@ -97,10 +109,12 @@ class updateUserLocation(Resource):
         if 'mac_address' not in data:
             return {"Error":"mac_address field not sent"},400    
         
-        if not updateDocument('rfid_users',('user_id','==',1),{"user_id":2}):
+        data = getDocument('rfid_users',('rfid_uid','==','AAAAAAAA'))
+        # updateDocument('rfid_users',('user_id','==',1),{"user_id":2}
+        if not data:
            return {"Error":"User document not updated"}, 400
         else:
-            return {"Success":"User document updated"}, 200
+            return {"Success":data}, 200
         
             
 class sendScannedUID(Resource):
