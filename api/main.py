@@ -72,7 +72,7 @@ class sendTimeStamp(Resource):
         for doc in docs:
 
             doc_ref = db.collection('rfid_users').document(doc.id)
-            doc_ref.update({'user_id':1})
+            doc_ref.update({'user_id':2})
         
         return {'Success': "The data was updated"}, 200
             
