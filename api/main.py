@@ -24,13 +24,8 @@ API_KEY = "klXJfkUSyMFuIevkzCDJ7cn5uUzrFCyT"
 def apiKeyCheck(req):
     # Step 2: Debug the headers to ensure the API key is sent
     api_key = req.headers.get('x-api-key')
-    
-    if api_key is None:
-        print("API key header missing!")
-        return False
-    else:
-        print(api_key == API_KEY)
-        return api_key == API_KEY
+        
+    return api_key == API_KEY
 
 def updateDocument(collection_id, query, updated_values):
 
@@ -88,41 +83,12 @@ class getRoomFromMACAddress(Resource):
         else:
             return {"error": "No matching document found"}, 404
 
-class updateUserLocationObsolete(Resource):
-    def post(self):
-
-        if not apiKeyCheck(request):
-            return {"error":"Unauthorised access"},401
-        
-        collection_ref = db.collection('rfid_users')
-
-        # Query for documents where user_id equals 1
-        query_ref = collection_ref.where("user_id", "==", 1)
-        docs = query_ref.stream()
-
-        # Initialize a counter to track how many documents are updated
-        doc_updated = False
-
-        # Loop through all documents found in the query
-        for doc in docs:
-            doc_ref = db.collection('rfid_users').document(doc.id)
-
-            # Update the user_id in the found document
-            doc_ref.update({'user_id': 2})
-            doc_updated = True  # Increment the counter after each update
-
-        # Check if any documents were updated and return a message accordingly
-        if doc_updated:
-            return {'Success': "Document were updated"}, 200
-        else:
-            return {'Error': "No documents found with user_id = 1"}, 404
-
 class updateUserLocation(Resource):
     def post(self):
         if not apiKeyCheck(request):
-            return {"error":"Unauthorised access"}, 401
-        
-        return {"Success":"Authenticated"}, 200
+            return {"Error":"Unauthorised access"},401
+        else:
+            return {"success":"Authenticated"},200
         #data = request.json
         
         #if not data:
