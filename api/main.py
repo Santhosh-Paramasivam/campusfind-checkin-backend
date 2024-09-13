@@ -6,6 +6,7 @@ from firebase_admin import credentials, firestore, exceptions
 from flask import Flask, request
 from flask_restful import Api, Resource
 from google.cloud.exceptions import NotFound
+from datetime import datetime
 
 service_account_base64 = os.getenv('FIREBASE_AUTH_CREDENTIALS')
 service_account_json = base64.b64decode(service_account_base64).decode('utf-8')
@@ -116,10 +117,13 @@ class updateUserLocation(Resource):
         if 'uid' not in data:
             return {"Error":"uid field not sent"},400
         if 'mac_address' not in data:
-            return {"Error":"mac_address field not sent"},400    
+            return {"Error":"mac_address field not sent"},400
+        if 'entry_time' not in data:
+            return {"Error":"entry_time field not sent"},400    
         
         mac_address = data['mac_address']
         uid = data['uid']
+        date_time = datetime.fromisoformat(data['entry_time'].replace("Z", "+00:00"))
 
         rfid_users = getDocument('rfid_users',('rfid_uid','==',data['uid']),('location','user_id','in_room'))
         if not rfid_users:
