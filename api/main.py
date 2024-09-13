@@ -111,7 +111,7 @@ class updateUserLocation(Resource):
         
         print(data['mac_address'])
         #datatoreturn = getDocument('rfid_reader_location',('reader_mac_address','==',data['mac_address']),('location',))
-        datatoreturn = getDocument('rfid_users',('user_id','==',1),('rfid_uid',))
+        datatoreturn = getDocument('rfid_users',('user_id','==',2),('rfid_uid',))
         # updateDocument('rfid_users',('user_id','==',1),{"user_id":2})
         if not datatoreturn:
            return {"Error":"User document not updated"}, 400
