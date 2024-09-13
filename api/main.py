@@ -32,14 +32,10 @@ def updateDocument(collection_id, query, updated_values):
 
     collection_ref = db.collection(collection_id)
 
-    try:
-        # Query the Firestore collection with the provided query
-        query_ref = collection_ref.where(query[0], query[1], query[2])
-    except exceptions.INVALID_ARGUMENT as e:
-        # Log or handle specific Firestore exceptions
-        print(f"Error during query: {e}")
-        return {"Error":"Invalid query or document not found."}, 400
-
+    query_ref = collection_ref.where(query[0], query[1], query[2])
+    if not query_ref:
+        return False
+    
     docs = query_ref.stream()
 
     doc_updated = False
@@ -56,13 +52,9 @@ def getDocument(collection_id, query, values_to_get):
 
     collection_ref = db.collection(collection_id)
 
-    try:
-        # Query the Firestore collection with the provided query
-        query_ref = collection_ref.where(query[0], query[1], query[2])
-    except exceptions.INVALID_ARGUMENT as e:
-        # Log or handle specific Firestore exceptions
-        print(f"Error during query: {e}")
-        return {"Error":"Invalid query or document not found."}, 400
+    query_ref = collection_ref.where(query[0], query[1], query[2])
+    if not query_ref:
+        return None
 
     docs = query_ref.stream()
     docs_list = list(docs)
@@ -135,7 +127,9 @@ class updateUserLocation(Resource):
         if not user_id:
             return {"Error":"Invalid UID"},400
 
-        updateDocument('rfid_users',('user_id','==',user_id),{"location":location})
+        docUpdated = updateDocument('rfid_users',('user_id','==',user_id),{"location":location})
+        if not docUpdated:
+            return {"Error":"Invalid Something"},400
         if not data:
            return {"Error":"User document not updated"}, 400
         else:
