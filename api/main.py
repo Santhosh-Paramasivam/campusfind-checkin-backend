@@ -44,7 +44,7 @@ def updateDocument(collection_id, query, updated_values):
 
     return doc_updated
 
-def getDocument(collection_id, query):
+def getDocument(collection_id, query, values_to_get):
 
     collection_ref = db.collection(collection_id)
 
@@ -54,10 +54,10 @@ def getDocument(collection_id, query):
     docs_list = list(docs)
     if docs_list:
         doc = docs_list[0]
-        return {
-            "id": doc.id,
-            "user_id": doc.to_dict().get('user_id')
-        }
+        query_result = {"id":doc.id}
+        for value in values_to_get:
+            query_result.update({value: doc.to_dict().get(value)})
+        return query_result
     else:
         return None
 
@@ -109,7 +109,7 @@ class updateUserLocation(Resource):
         if 'mac_address' not in data:
             return {"Error":"mac_address field not sent"},400    
         
-        data = getDocument('rfid_users',('rfid_uid','==','AAAAAAAA'))
+        data = getDocument('rfid_users',('rfid_uid','==','AAAAAAAA'),('user_id'))
         # updateDocument('rfid_users',('user_id','==',1),{"user_id":2}
         if not data:
            return {"Error":"User document not updated"}, 400
