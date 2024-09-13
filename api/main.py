@@ -60,20 +60,33 @@ class getRoomFromMACAddress(Resource):
         else:
             return {"error": "No matching document found"}, 404
 
+from flask_restful import Resource
+
 class sendTimeStamp(Resource):
     def post(self):
-
         collection_ref = db.collection('rfid_users')
 
-        query_ref = collection_ref.where("user_id","==","1")
+        # Query for documents where user_id equals 1
+        query_ref = collection_ref.where("user_id", "==", 1)
         docs = query_ref.stream()
-        # a = query_ref.get()
-        
-        for doc in docs:
 
+        # Initialize a counter to track how many documents are updated
+        updated_docs = 0
+
+        # Loop through all documents found in the query
+        for doc in docs:
             doc_ref = db.collection('rfid_users').document(doc.id)
-            doc_ref.update({'user_id':2})
-            return {'Success': "The data was updated"}, 200
+
+            # Update the user_id in the found document
+            doc_ref.update({'user_id': 2})
+            updated_docs += 1  # Increment the counter after each update
+
+        # Check if any documents were updated and return a message accordingly
+        if updated_docs > 0:
+            return {'Success': f"{updated_docs} document(s) were updated"}, 200
+        else:
+            return {'Error': "No documents found with user_id = 1"}, 404
+
         
         
             
