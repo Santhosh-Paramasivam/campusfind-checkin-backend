@@ -62,8 +62,12 @@ class getRoomFromMACAddress(Resource):
 
 from flask_restful import Resource
 
-class sendTimeStamp(Resource):
+class updateUserLocation(Resource):
     def post(self):
+
+        if not apiKeyCheck(request):
+            return {"error":"Unauthorised access"},401
+        
         collection_ref = db.collection('rfid_users')
 
         # Query for documents where user_id equals 1
@@ -117,6 +121,6 @@ def index():
 api.add_resource(getUserFromUID, "/getUserFromUID")
 api.add_resource(getRoomFromMACAddress, "/getRoomFromMACAddress")
 api.add_resource(sendScannedUID,  "/track_update")
-api.add_resource(sendTimeStamp,"/timestamp")
+api.add_resource(updateUserLocation,"/update_user_location")
 
 app = app
