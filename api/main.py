@@ -2,10 +2,9 @@ import os
 import json
 import base64
 import firebase_admin
-from firebase_admin import credentials, firestore, exceptions
+from firebase_admin import credentials, firestore
 from flask import Flask, request
 from flask_restful import Api, Resource
-from google.cloud.exceptions import NotFound
 from datetime import datetime
 
 service_account_base64 = os.getenv('FIREBASE_AUTH_CREDENTIALS')
@@ -15,7 +14,6 @@ service_account_info = json.loads(service_account_json)
 cred = credentials.Certificate(service_account_info)
 firebase_admin.initialize_app(cred)
 
-# Initialize Firestore
 db = firestore.client()
 
 app = Flask(__name__)
@@ -24,7 +22,7 @@ api = Api(app)
 API_KEY = "klXJfkUSyMFuIevkzCDJ7cn5uUzrFCyT"
 
 def apiKeyCheck(req):
-    # Step 2: Debug the headers to ensure the API key is sent
+
     api_key = req.headers.get('x-api-key')
         
     return api_key == API_KEY
@@ -35,11 +33,9 @@ def updateDocument(collection_id, query, updated_values):
 
     query_ref = collection_ref.where(query[0], query[1], query[2])
     if not query_ref:
-        print("No valid inputs")
         return False
     
     docs = query_ref.stream()
-
     doc_updated = False
 
     for doc in docs:
@@ -56,16 +52,12 @@ def getDocument(collection_id, query, values_to_get):
 
     query_ref = collection_ref.where(query[0], query[1], query[2])
     if not query_ref:
-        print("No valid inputs")
         return None
 
     docs = query_ref.stream()
-    docs_list = list(docs)
-    if docs_list:
-        doc = docs_list[0]
+    for doc in docs:
         query_result = {"id":doc.id}
         for value in values_to_get:
-            print(value, doc.to_dict().get(value))
             query_result.update({value: doc.to_dict().get(value)})
         return query_result
     else:
