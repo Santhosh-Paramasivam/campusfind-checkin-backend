@@ -73,7 +73,8 @@ class sendTimeStamp(Resource):
 
             doc_ref = db.collection('rfid_users').document(doc.id)
             doc_ref.update({'user_id':1})
-            return {'Success':"The data was added"}, 200
+        
+        return {'Success': "The data was updated"}, 200
             
 class sendScannedUID(Resource):
     def get(self):
