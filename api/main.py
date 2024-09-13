@@ -56,6 +56,7 @@ def getDocument(collection_id, query, values_to_get):
         doc = docs_list[0]
         query_result = {"id":doc.id}
         for value in values_to_get:
+            print(value, doc.to_dict().get(value))
             query_result.update({value: doc.to_dict().get(value)})
         return query_result
     else:
