@@ -34,7 +34,7 @@ def updateDocument(collection_id, query, updated_values):
     try:
         query_ref = collection_ref.where(query[0],query[1],query[2])
     except:
-        return False
+        return {"Error":"Invalid Values"},400
 
     docs = query_ref.stream()
 
