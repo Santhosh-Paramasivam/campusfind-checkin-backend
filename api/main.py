@@ -142,7 +142,7 @@ class updateUserLocation(Resource):
         else:
             in_room = not in_room
 
-        docUpdated = updateDocument('rfid_users',('user_id','==',user_id),{"location":current_location, "in_room":in_room})
+        docUpdated = updateDocument('rfid_users',('user_id','==',user_id),{"location":current_location, "in_room":in_room, "last_location_entry":date_time})
         if not docUpdated:
             return {"Error":"Unexpected error occured"},400
 
