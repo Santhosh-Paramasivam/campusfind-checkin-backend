@@ -119,14 +119,14 @@ class updateUserLocation(Resource):
         if not apiKeyCheck(request):
             return {"Error":"Unauthorised access"},401
     
-        data = request.json
+        #data = request.json
         
-        if not data:
-            return {"Error":"no input data sent"},400
-        if not 'uid' in data:
-            return {"Error":"uid field not sent"},400
-        if not 'mac_address' in data:
-            return {"Error":"mac_address field not sent"}    
+        #if not data:
+        #    return {"Error":"no input data sent"},400
+        #if not 'uid' in data:
+        #    return {"Error":"uid field not sent"},400
+        #if not 'mac_address' in data:
+        #    return {"Error":"mac_address field not sent"}    
         
         if not updateDocument('rfid_users',('user_id','==',1),{"user_id":2}):
            return {"Error":"User document not updated"}, 400
