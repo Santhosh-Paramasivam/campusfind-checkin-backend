@@ -26,6 +26,28 @@ def apiKeyCheck(req):
     api_key = req.headers.get('x-api-key')
     return api_key == API_KEY
 
+def updateDocument(collection_id, query, updated_values):
+
+    collection_ref = db.collection(collection_id)
+
+    # Query for documents where user_id equals 1
+    query_ref = collection_ref.where(query[0],query[1],query[2])
+    docs = query_ref.stream()
+
+    # Initialize a counter to track how many documents are updated
+    doc_updated = False
+
+    # Loop through all documents found in the query
+    for doc in docs:
+        doc_ref = db.collection(collection_id).document(doc.id)
+
+        # Update the user_id in the found document
+        doc_ref.update(updated_values)
+        doc_updated = True  # Increment the counter after each update
+
+    # Check if any documents were updated and return a message accordingly
+    return doc_updated
+
 class getUserFromUID(Resource):
     def get(self):
         collection_ref = db.collection('rfid_users')
@@ -62,7 +84,7 @@ class getRoomFromMACAddress(Resource):
 
 from flask_restful import Resource
 
-class updateUserLocation(Resource):
+class updateUserLocationObsolete(Resource):
     def post(self):
 
         if not apiKeyCheck(request):
@@ -91,8 +113,14 @@ class updateUserLocation(Resource):
         else:
             return {'Error': "No documents found with user_id = 1"}, 404
 
+class updateUserLocation(Resource):
+    def post(self):
+
+        if not apiKeyCheck(request):
+            return {"error":"Unauthorised access"},401
         
-        
+        if not updateDocument('rfid_users',('user_id','==',1),{"user_id":2}):
+           return {"error":"Document not updated"}, 404
             
 class sendScannedUID(Resource):
     def get(self):
