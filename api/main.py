@@ -82,8 +82,6 @@ class getRoomFromMACAddress(Resource):
         else:
             return {"error": "No matching document found"}, 404
 
-from flask_restful import Resource
-
 class updateUserLocationObsolete(Resource):
     def post(self):
 
