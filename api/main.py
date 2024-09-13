@@ -63,7 +63,7 @@ class getRoomFromMACAddress(Resource):
 class sendTimeStamp(Resource):
     def post(self):
 
-        collection_ref = db.collection('rfid_user')
+        collection_ref = db.collection('rfid_users')
 
         query_ref = collection_ref.where("user_id","==","1")
         docs = query_ref.stream()
@@ -73,8 +73,9 @@ class sendTimeStamp(Resource):
 
             doc_ref = db.collection('rfid_users').document(doc.id)
             doc_ref.update({'user_id':2})
+            return {'Success': "The data was updated"}, 200
         
-        return {'Success': "The data was updated"}, 200
+        
             
 class sendScannedUID(Resource):
     def get(self):
