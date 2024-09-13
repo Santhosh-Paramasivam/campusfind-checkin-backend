@@ -132,7 +132,7 @@ class UpdateRFIDReaderOnlineTimestamp(Resource):
         mac_address = data['mac_address']
         last_online = datetime.fromisoformat(data['last_online'].replace("Z", "+00:00"))
 
-        docUpdated = updateDocument("rfid_reader_location",("reader_mac_address","==",mac_address),{last_online})
+        docUpdated = updateDocument("rfid_reader_location",("reader_mac_address","==",mac_address),{"last_online",last_online})
         if not docUpdated:
             return {"Error":"Unexpected error occured"},400
         
