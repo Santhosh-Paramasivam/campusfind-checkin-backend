@@ -119,7 +119,7 @@ class updateUserLocation(Resource):
         if not data:
            return {"Error":"User document not updated"}, 400
         else:
-            return {"Success":"User document updated","user_id":data['user_id']}, 200
+            return {"Success":"User document updated","data":data}, 200
         
             
 class sendScannedUID(Resource):
