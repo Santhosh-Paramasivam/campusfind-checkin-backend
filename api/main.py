@@ -114,7 +114,13 @@ class updateUserLocation(Resource):
         uid = data['uid']
 
         location = getDocument("rfid_reader_location",("reader_mac_address","==",mac_address),("location",))['location']
+        if not location:
+            return {"Error":"Invalid MAC address"},400
+        
         user_id = getDocument('rfid_users',('rfid_uid','==',data['uid']),('user_id',))['user_id']
+        if not user_id:
+            return {"Error":"Invalid UID"},400
+
         updateDocument('rfid_users',('user_id','==',user_id),{"location":location})
         if not data:
            return {"Error":"User document not updated"}, 400
