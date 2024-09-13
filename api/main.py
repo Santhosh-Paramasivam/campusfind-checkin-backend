@@ -87,21 +87,20 @@ class updateUserLocation(Resource):
     def post(self):
         if not apiKeyCheck(request):
             return {"Error":"Unauthorised access"},401
+        
+        data = request.json
+        
+        if not data:
+            return {"Error":"No input data sent"},400
+        if 'uid' not in data:
+            return {"Error":"uid field not sent"},400
+        if 'mac_address' not in data:
+            return {"Error":"mac_address field not sent"},400    
+        
+        if not updateDocument('rfid_users',('user_id','==',1),{"user_id":2}):
+           return {"Error":"User document not updated"}, 400
         else:
-            return {"success":"Authenticated"},200
-        #data = request.json
-        
-        #if not data:
-        #    return {"Error":"no input data sent"},400
-        #if 'uid' not in data:
-        #    return {"Error":"uid field not sent"},400
-        #if 'mac_address' not in data:
-        #    return {"Error":"mac_address field not sent"},400    
-        
-        #if not updateDocument('rfid_users',('user_id','==',1),{"user_id":2}):
-        #   return {"Error":"User document not updated"}, 400
-        #else:
-        #    return {"Success":"User document updated"}, 200
+            return {"Success":"User document updated"}, 200
         
             
 class sendScannedUID(Resource):
