@@ -121,21 +121,26 @@ class updateUserLocation(Resource):
         mac_address = data['mac_address']
         uid = data['uid']
 
+        rfid_users = getDocument('rfid_users',('rfid_uid','==',data['uid']),('location',))
+        if not rfid_users:
+            return {"Error":"Invalid UID"},400
+        previous_location = rfid_users['location']
+
         reader_mac_address = getDocument("rfid_reader_location",("reader_mac_address","==",mac_address),("location",))
         if not reader_mac_address:
             return {"Error":"Invalid MAC address"},400
-        location = reader_mac_address['location']
+        current_location = reader_mac_address['location']
         
         rfid_users = getDocument('rfid_users',('rfid_uid','==',data['uid']),('user_id',))
         if not rfid_users:
             return {"Error":"Invalid UID"},400
         user_id = rfid_users['user_id']
 
-        docUpdated = updateDocument('rfid_users',('user_id','==',user_id),{"location":location})
+        docUpdated = updateDocument('rfid_users',('user_id','==',user_id),{"location":current_location})
         if not docUpdated:
             return {"Error":"Unexpected error occured"},400
 
-        return {"Success":"User document updated","uid":uid,"mac_address":mac_address,"location":location,"user_id":user_id}, 200
+        return {"Success":"User document updated","uid":uid,"mac_address":mac_address,"location":current_location,"user_id":user_id}, 200
         
             
 class sendScannedUID(Resource):
