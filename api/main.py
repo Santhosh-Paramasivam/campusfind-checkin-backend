@@ -27,12 +27,10 @@ def apiKeyCheck(req):
     
     if api_key is None:
         print("API key header missing!")
+        return False
     else:
-        print(f"Received API key: {api_key}")
-
-    print(api_key == API_KEY)
-    # Step 3: Compare the received API key with the stored one
-    return api_key == API_KEY
+        print(api_key == API_KEY)
+        return api_key == API_KEY
 
 def updateDocument(collection_id, query, updated_values):
 
@@ -124,8 +122,8 @@ class updateUserLocation(Resource):
 
         if not apiKeyCheck(request):
             return {"Error":"Unauthorised access"},401
-        else:
-            return {"Success":"Authenticated"},200
+        
+        return {"Success":"Authenticated"},200
         #data = request.json
         
         #if not data:
