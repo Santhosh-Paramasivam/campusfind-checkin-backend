@@ -5,6 +5,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from flask import Flask, request
 from flask_restful import Api, Resource
+from google.cloud.exceptions import NotFound
 
 service_account_base64 = os.getenv('FIREBASE_AUTH_CREDENTIALS')
 service_account_json = base64.b64decode(service_account_base64).decode('utf-8')
@@ -32,9 +33,13 @@ def updateDocument(collection_id, query, updated_values):
     collection_ref = db.collection(collection_id)
 
     try:
-        query_ref = collection_ref.where(query[0],query[1],query[2])
-    except:
-        return {"Error":"Invalid Values"},400
+        # Query the Firestore collection with the provided query
+        query_ref = collection_ref.where(query[0], query[1], query[2])
+        docs = query_ref.stream()
+    except (NotFound) as e:
+        # Log or handle specific Firestore exceptions
+        print(f"Error during query: {e}")
+        return {"success": False, "message": "Invalid query or document not found."}, 400
 
     docs = query_ref.stream()
 
