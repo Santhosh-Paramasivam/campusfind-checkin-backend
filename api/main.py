@@ -100,8 +100,7 @@ class updateUserLocation(Resource):
         if not apiKeyCheck(request):
             return {"Error":"Unauthorised access"},401
         
-        data = request.json
-        print("Datatype",type(data))
+        data = json.loads(request.json)
 
         if not data:
             return {"Error":"No input data sent"},400
