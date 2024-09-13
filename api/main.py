@@ -31,7 +31,11 @@ def updateDocument(collection_id, query, updated_values):
 
     collection_ref = db.collection(collection_id)
 
-    query_ref = collection_ref.where(query[0],query[1],query[2])
+    try:
+        query_ref = collection_ref.where(query[0],query[1],query[2])
+    except:
+        return False
+
     docs = query_ref.stream()
 
     doc_updated = False
