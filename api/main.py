@@ -119,11 +119,10 @@ class updateUserLocationObsolete(Resource):
 
 class updateUserLocation(Resource):
     def post(self):
-
         if not apiKeyCheck(request):
-            return {"Error":"Unauthorised access"},401
+            return {"error":"Unauthorised access"}, 401
         
-        return {"Success":"Authenticated"},200
+        return {"Success":"Authenticated"}, 200
         #data = request.json
         
         #if not data:
