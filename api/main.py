@@ -122,6 +122,7 @@ class UpdateUserLocationForApp(Resource):
         if 'entry_time' not in data:
             return {"Error":"entry_time field not sent"},400    
         print(type(data))
+
         mac_address = data['mac_address']
         uid = data['uid']
         date_time = datetime.fromisoformat(data['entry_time'].replace("Z", "+00:00"))
