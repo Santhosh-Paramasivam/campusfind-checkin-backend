@@ -8,6 +8,7 @@ from flask_restful import Api, Resource
 from datetime import datetime
 
 service_account_base64 = os.getenv('FIREBASE_AUTH_CREDENTIALS')
+API_KEY = os.getenv('API_KEY')
 service_account_json = base64.b64decode(service_account_base64).decode('utf-8')
 service_account_info = json.loads(service_account_json)
 
@@ -18,8 +19,6 @@ db = firestore.client()
 
 app = Flask(__name__)
 api = Api(app)
-
-API_KEY = "klXJfkUSyMFuIevkzCDJ7cn5uUzrFCyT"
 
 def apiKeyCheck(req):
 
@@ -64,49 +63,6 @@ def getDocument(collection_id, query, values_to_get):
         return None
 
 class UpdateUserLocation(Resource):
-    def post(self):
-        if not apiKeyCheck(request):
-            return {"Error":"Unauthorised access"},401
-        
-        data = request.json
-
-        if not data:
-            return {"Error":"No input data sent"},400
-        if 'uid' not in data:
-            return {"Error":"uid field not sent"},400
-        if 'mac_address' not in data:
-            return {"Error":"mac_address field not sent"},400
-        if 'entry_time' not in data:
-            return {"Error":"entry_time field not sent"},400    
-        print(type(data))
-        mac_address = data['mac_address']
-        uid = data['uid']
-        date_time = datetime.fromisoformat(data['entry_time'].replace("Z", "+00:00"))
-
-        rfid_users = getDocument('rfid_users',('rfid_uid','==',data['uid']),('location','user_id','in_room'))
-        if not rfid_users:
-            return {"Error":"Invalid UID"},400
-        previous_location = rfid_users['location']
-        user_id = rfid_users['user_id']
-        in_room = rfid_users['in_room']
-
-        reader_mac_address = getDocument("rfid_reader_location",("reader_mac_address","==",mac_address),("location",))
-        if not reader_mac_address:
-            return {"Error":"Invalid MAC address"},400
-        current_location = reader_mac_address['location']
-
-        if(current_location != previous_location):
-            in_room = True
-        else:
-            in_room = not in_room
-
-        docUpdated = updateDocument('rfid_users',('user_id','==',user_id),{"location":current_location, "in_room":in_room, "last_location_entry":date_time})
-        if not docUpdated:
-            return {"Error":"Unexpected error occured"},400
-
-        return {"Success":"User document updated"}, 200
-
-class UpdateUserLocationForApp(Resource):
     def post(self):
         if not apiKeyCheck(request):
             return {"Error":"Unauthorised access"},401
@@ -182,8 +138,7 @@ def favicon():
 def index():
     return {"message": "Welcome to the API!"}
 
-api.add_resource(UpdateUserLocation,"/update_user_location")
-api.add_resource(UpdateUserLocationForApp,"/update_user_location_forapp")
+api.add_resource(UpdateUserLocation,"/update_user_location_forapp")
 api.add_resource(UpdateRFIDReaderOnlineTimestamp,"/last_online")
 
 app = app
