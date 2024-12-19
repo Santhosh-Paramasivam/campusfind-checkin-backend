@@ -62,6 +62,10 @@ def getDocument(collection_id, query, values_to_get):
     else:
         return None
 
+class KeepAlive(Resource):
+    def get(self):
+        return "Service pinged!",200
+
 class UpdateUserLocation(Resource):
     def post(self):
         if not apiKeyCheck(request):
@@ -139,4 +143,5 @@ def index():
     return {"message": "Welcome to the API!"}
 
 api.add_resource(UpdateUserLocation,"/update_user_location_forapp")
+api.add_resource(KeepAlive, "/keep_alive")
 api.add_resource(UpdateRFIDReaderOnlineTimestamp,"/last_online")
