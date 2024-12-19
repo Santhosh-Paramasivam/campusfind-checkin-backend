@@ -6,6 +6,7 @@ from firebase_admin import credentials, firestore
 from flask import Flask, request
 from flask_restful import Api, Resource
 from datetime import datetime
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 service_account_base64 = os.getenv('FIREBASE_AUTH_CREDENTIALS')
 API_KEY = os.getenv('API_KEY')
@@ -22,7 +23,7 @@ api = Api(app)
 
 def uniqueAPIKeyCheck(institution_id, unique_api_key):    
 
-    api_key = getDocument('institutions', ('institution_id','==',institution_id), ('api_key'))
+    api_key = getDocument('institutions', ('institution_id','==',institution_id), ('api_key',))
 
     if not api_key or api_key:
         return {"error":"Unauthorised access"},401
@@ -41,6 +42,7 @@ def updateDocument(collection_id, query, updated_values):
     collection_ref = db.collection(collection_id)
 
     query_ref = collection_ref.where(query[0], query[1], query[2])
+    collection_ref.where()
     if not query_ref:
         return False
     
@@ -59,7 +61,7 @@ def getDocument(collection_id, query, values_to_get):
 
     collection_ref = db.collection(collection_id)
 
-    query_ref = collection_ref.where(query[0], query[1], query[2])
+    query_ref = collection_ref.where(filter=FieldFilter(query[0], query[1], query[2]))
     if not query_ref:
         return None
 
