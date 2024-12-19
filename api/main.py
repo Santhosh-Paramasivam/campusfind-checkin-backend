@@ -25,7 +25,7 @@ def uniqueAPIKeyCheck(institution_id, unique_api_key):
 
     api_key = getDocument('institutions', ('institution_id','==',institution_id), ('api_key',))
 
-    if not api_key or api_key:
+    if not api_key and api_key['api_key'] != unique_api_key:
         return False
     else:
         return True
