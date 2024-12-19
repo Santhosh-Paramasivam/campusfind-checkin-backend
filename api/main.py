@@ -26,9 +26,9 @@ def uniqueAPIKeyCheck(institution_id, unique_api_key):
     api_key = getDocument('institutions', ('institution_id','==',institution_id), ('api_key',))
 
     if not api_key or api_key:
-        return {"error":"Unauthorised access"},401
+        return False
     else:
-        return {"sucess":"Authorised!"},200
+        return True
 
 
 def apiKeyCheck(req):
@@ -77,7 +77,10 @@ def getDocument(collection_id, query, values_to_get):
 class UpdateUserLocationSecure(Resource):
     def post(self):
         data = request.json
-        uniqueAPIKeyCheck(data['institution_id'], data['api_key'])
+        if(uniqueAPIKeyCheck(data['institution_id'], data['api_key'])):
+            return {"success":"Authorised!"},200
+        else:
+            return {"error":"Unauthorised"},401
 
 class UpdateUserLocation(Resource):
     def post(self):
