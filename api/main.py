@@ -20,6 +20,16 @@ db = firestore.client()
 app = Flask(__name__)
 api = Api(app)
 
+def uniqueAPIKeyCheck(institution_id, unique_api_key):    
+
+    api_key = getDocument('institutions', ('institution_id','==',institution_id), ('api_key'))
+
+    if not api_key or api_key:
+        return {"error":"Unauthorised access"},401
+    else:
+        return {"sucess":"Authorised!"},200
+
+
 def apiKeyCheck(req):
 
     api_key = req.headers.get('x-api-key')
@@ -61,6 +71,11 @@ def getDocument(collection_id, query, values_to_get):
         return query_result
     else:
         return None
+
+class UpdateUserLocationSecure(Resource):
+    def post(self):
+        data = request.json
+        uniqueAPIKeyCheck(data['institution_id'], data["12345"])
 
 class UpdateUserLocation(Resource):
     def post(self):
@@ -140,3 +155,4 @@ def index():
 
 api.add_resource(UpdateUserLocation,"/update_user_location_forapp")
 api.add_resource(UpdateRFIDReaderOnlineTimestamp,"/last_online")
+api.add_resource(UpdateUserLocationSecure, "/update_user_location_secure")
