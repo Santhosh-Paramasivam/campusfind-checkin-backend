@@ -75,7 +75,7 @@ def getDocument(collection_id, query, values_to_get):
 class UpdateUserLocationSecure(Resource):
     def post(self):
         data = request.json
-        uniqueAPIKeyCheck(data['institution_id'], data["12345"])
+        uniqueAPIKeyCheck(data['institution_id'], data['api_key'])
 
 class UpdateUserLocation(Resource):
     def post(self):
