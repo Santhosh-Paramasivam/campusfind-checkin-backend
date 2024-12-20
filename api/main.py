@@ -23,7 +23,7 @@ api = Api(app)
 
 def uniqueAPIKeyCheck(institution_id, unique_api_key):    
 
-    api_key = getDocument('institutions', ('institution_id','==',institution_id), ('api_key',))
+    api_key = getDocumentSecure(institution_id,'institutions', ('institution_id','==',institution_id), ('api_key',))
 
     if not api_key or api_key['api_key'] != unique_api_key:
         return False
@@ -57,11 +57,30 @@ def updateDocument(collection_id, query, updated_values):
 
     return doc_updated
 
+def getDocumentSecure(institution_id, collection_id, query, values_to_get):
+
+    collection_ref = db.collection(collection_id)
+
+    query_ref = collection_ref.where(filter=FieldFilter('institution_id','==',institution_id)).where(filter=FieldFilter(query[0], query[1], query[2]))
+
+    if not query_ref:
+        return None
+
+    docs = query_ref.stream()
+    for doc in docs:
+        query_result = {"id":doc.id}
+        for value in values_to_get:
+            query_result.update({value: doc.to_dict().get(value)})
+        return query_result
+    else:
+        return None
+
 def getDocument(collection_id, query, values_to_get):
 
     collection_ref = db.collection(collection_id)
 
     query_ref = collection_ref.where(filter=FieldFilter(query[0], query[1], query[2]))
+
     if not query_ref:
         return None
 
