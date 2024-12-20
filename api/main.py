@@ -140,7 +140,7 @@ class UpdateUserLocationSecure(Resource):
         date_time = datetime.fromisoformat(data['entry_time'].replace("Z", "+00:00"))
 
         if not uniqueAPIKeyCheck(institution_id,private_api_key):
-            return {"error":"Unauthorised institution access, incorrect private api key"},400
+            return {"error":"Unauthorised institution access, incorrect private api key or institution_id"},400
 
         rfid_users = getDocumentSecure(institution_id,'institution_members',('rfid_uid','==',uid),('rfid_location','id','in_room'))
         if not rfid_users:
