@@ -159,7 +159,7 @@ class UpdateUserLocationSecure(Resource):
         else:
             in_room = not in_room
 
-        docUpdated = updateDocumentSecure('institution_members',('id','==',user_id),{"rfid_location":current_location, "in_room":in_room, "last_location_entry":date_time})
+        docUpdated = updateDocumentSecure(institution_id, 'institution_members',('id','==',user_id),{"rfid_location":current_location, "in_room":in_room, "last_location_entry":date_time})
         if not docUpdated:
             return {"error":"Unexpected error occured"},500
 
