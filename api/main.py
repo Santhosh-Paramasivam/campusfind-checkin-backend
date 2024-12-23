@@ -23,7 +23,7 @@ api = Api(app)
 
 def uniqueAPIKeyCheck(institution_id, unique_api_key):    
 
-    api_key = getDocument('institutions', ('institution_id','==',institution_id), ('api_key',))
+    api_key = getDocument('institutions_keys', ('institution_id','==',institution_id), ('api_key',))
 
     if not api_key or api_key['api_key'] != unique_api_key:
         return False
@@ -145,6 +145,7 @@ class UpdateUserLocationSecure(Resource):
         rfid_users = getDocumentSecure(institution_id,'institution_members',('rfid_uid','==',uid),('rfid_location','id','in_room'))
         if not rfid_users:
             return {"error":"Invalid UID"},400
+        
         previous_location = rfid_users['rfid_location']
         user_id = rfid_users['id']
         in_room = rfid_users['in_room']
@@ -160,6 +161,7 @@ class UpdateUserLocationSecure(Resource):
             in_room = not in_room
 
         docUpdated = updateDocumentSecure(institution_id, 'institution_members',('id','==',user_id),{"rfid_location":current_location, "in_room":in_room, "last_location_entry":date_time})
+        
         if not docUpdated:
             return {"error":"Unexpected error occured"},500
 
