@@ -21,9 +21,10 @@ This is a backend rest api written in Python which then handles the **secure upd
 
 Create an `.env` file with :
 
-`
-
-`
+``` python
+API-KEY=PUBLIC_API_KEY
+FIREBASE_AUTH_CREDENTIALS=FIREBASE_CREDENTIALS_BASE64_ENCODING
+```
 
 ## Contact
 
