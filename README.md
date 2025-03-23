@@ -31,9 +31,3 @@ FIREBASE_AUTH_CREDENTIALS=FIREBASE_CREDENTIALS_BASE64_ENCODING
 [LinkedIn](https://github.com/Santhosh-Paramasivam/CampusFind/blob/main/www.linkedin.com/in/santhosh-paramasivam-2a430a267)
 
 Submit an issue here on Github
-
-## Contributing
-
-I would very much appreciate your help! Contribute by forking the repo and opening pull requests.
-
-All pull requests should be submitted to the main branch.  
